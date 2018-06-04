@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using System.Web;
 using Nethereum.Hex.HexTypes;
@@ -22,6 +23,25 @@ namespace Consent.Direct.Api.Services
         {
             _web3 = web3;
             _contract = web3.Eth.GetContract(_abi, contractAddress);
+        }
+
+        /// <summary>
+        ///  calls getSenderSubject() public view returns (uint index, uint numresponses, bytes32 emailhash)
+        ///  this function has this requirement for completion
+        ///   require(cs.emailhash != bytes32(0));
+        /// </summary>
+        public async Task<bool> SubjectHasRegistered(string subjectAddress) 
+        {
+            try
+            {
+                var getSenderSubject = _contract.GetFunction("getSenderSubject");
+                var subjectRegistration = await getSenderSubject.CallDeserializingToObjectAsync<SubjectRegistration>(subjectAddress, null, null, new object[] { });
+                return subjectRegistration.EmailHash != null;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public async Task<bool> RegisterSubject(string senderAddress, string subjectAddress, string emailhash)
@@ -56,4 +76,16 @@ namespace Consent.Direct.Api.Services
         public string EmailHash { get; set; }
     }
 
+    [FunctionOutput]
+    class SubjectRegistration
+    {
+        [Parameter("uint256", 1)]
+        public BigInteger Index { get; set; }
+
+        [Parameter("uint256", 1)]
+        public BigInteger NumResponses { get; set; }
+
+        [Parameter("bytes32", 1)]
+        public byte[] EmailHash { get; set; }
+    }
 }

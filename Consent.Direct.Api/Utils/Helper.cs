@@ -7,7 +7,6 @@ namespace Consent.Direct.Api.Utils
 {
     class Helper
     {
-
         public static bool TrySerialise(object inObj, out string output)
         {
             try
@@ -42,6 +41,6 @@ namespace Consent.Direct.Api.Utils
                 output = ex.Message;
                 return false;
             }
-        }
+        }        
     }
 }

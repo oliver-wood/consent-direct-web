@@ -23,6 +23,7 @@ namespace Consent.Direct.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(); // Will want to add some additional policies to this
             services.AddMvc();
             services.AddSingleton<IConfiguration>(Configuration);
         }
@@ -35,6 +36,13 @@ namespace Consent.Direct.Api
                 app.UseDeveloperExceptionPage();
             }
 
+            // This just allows all CORS, which might be a bit bad!
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials());
+            
             app.UseMvc();
         }
     }
