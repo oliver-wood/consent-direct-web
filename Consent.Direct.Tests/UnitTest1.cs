@@ -16,8 +16,15 @@ namespace Consent.Direct.Tests
             var web3 = new Nethereum.Web3.Web3(); // localhost 8545
             var cds = new ConsentDirectService(web3, consentDirectSmartContractAddress);
 
-            bool success = await cds.RegisterSubject(consentDirectAccount, "0x47d6bb71fbdc161794ac6d4db623da7c8de24e31", "0x7c492afa7e42bf537557c3cdf470fc843ddc532d72f6fae27a755f74115fb557");
+            string subjectAddress = "0x47d6bb71fbdc161794ac6d4db623da7c8de24e31";
+            bool success = await cds.RegisterSubject(
+                senderAddress: consentDirectAccount, 
+                subjectAddress: subjectAddress, 
+                emailhash: "0x7c492afa7e42bf537557c3cdf470fc843ddc532d72f6fae27a755f74115fb557"
+            );
             Assert.True(success);
+
+            success = await cds.SubjectHasRegistered(subjectAddress: "0x6d65dea4846bdbc12ee458c607bc078161689607");
         }
     }
 }
